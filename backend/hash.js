@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const plainPassword = 'hedonisttest123'; // <- promeni ovo svaki put kad ti treba nova lozinka
+const plainPassword = 'publikatest123'; // <- promeni ovo svaki put kad ti treba nova lozinka
 
 bcrypt.hash(plainPassword, 10, (err, hash) => {
   if (err) {

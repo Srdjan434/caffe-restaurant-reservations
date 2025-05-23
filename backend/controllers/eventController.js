@@ -1,7 +1,7 @@
 const db = require('../config/db');
 const eventModel = require('../models/eventModel');
 
-// GET svi događaji
+// GET svi događaji (javno)
 exports.getEvents = async (req, res) => {
   try {
     const [events] = await db.query(`
@@ -37,7 +37,7 @@ exports.getEventById = async (req, res) => {
   }
 };
 
-// Kreiranje događaja (menadžer)
+// Kreiranje događaja
 exports.createEvent = async (req, res) => {
   const { title, description, event_date } = req.body;
   const venue_name = req.user.venue_name;
@@ -50,7 +50,7 @@ exports.createEvent = async (req, res) => {
     await db.query(
       `INSERT INTO events (venue_name, title, description, event_date, created_by)
        VALUES (?, ?, ?, ?, ?)`,
-      [venue_name, title, description, event_date, req.user.email]
+      [venue_name, title, description, event_date, req.user.id]
     );
 
     res.status(201).json({ message: 'Događaj uspešno dodat' });
@@ -60,14 +60,17 @@ exports.createEvent = async (req, res) => {
   }
 };
 
-// Izmena događaja (menadžer samo za svoj lokal)
+// Izmena događaja
 exports.updateEvent = async (req, res) => {
   const { id } = req.params;
   const { title, description, event_date } = req.body;
-  const venue_name = req.user.venue_name;
 
   try {
-    const [rows] = await db.query('SELECT * FROM events WHERE id = ? AND venue_name = ?', [id, reg.user.id]);
+    const [rows] = await db.query(
+      'SELECT * FROM events WHERE id = ? AND LOWER(venue_name) = LOWER(?)',
+      [id, req.user.venue_name]
+    );
+
     if (rows.length === 0) {
       return res.status(403).json({ error: 'Nemate pristup ovom događaju' });
     }
@@ -84,13 +87,16 @@ exports.updateEvent = async (req, res) => {
   }
 };
 
-// Brisanje događaja (menadžer samo za svoj lokal)
+// Brisanje događaja
 exports.deleteEvent = async (req, res) => {
   const { id } = req.params;
-  const venue_name = req.user.venue_name;
 
   try {
-    const [rows] = await db.query('SELECT * FROM events WHERE id = ? AND venue_name = ?', [id, reg.user.id]);
+    const [rows] = await db.query(
+      'SELECT * FROM events WHERE id = ? AND LOWER(venue_name) = LOWER(?)',
+      [id, req.user.venue_name]
+    );
+
     if (rows.length === 0) {
       return res.status(403).json({ error: 'Nemate pristup ovom događaju' });
     }
@@ -103,7 +109,7 @@ exports.deleteEvent = async (req, res) => {
   }
 };
 
-// Dohvati događaje koje je kreirao trenutni korisnik
+// Dohvati događaje koje je kreirao korisnik
 exports.getMyEvents = async (req, res) => {
   try {
     const userId = req.user.id;
