@@ -1,7 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('token');
-  console.log('Token iz localStorage:', token);
-
   const eventsList = document.getElementById('eventsList');
 
   if (!token) {
@@ -16,12 +14,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       },
     });
 
-    const events = await res.json();
-
     if (!res.ok) {
-      eventsList.innerHTML = '<p>Greška prilikom učitavanja događaja.</p>';
+      const error = await res.json();
+      console.error('Greška sa servera:', error);
+      eventsList.innerHTML = `<p>Greška: ${error.error || 'Neuspešno učitavanje događaja'}</p>`;
       return;
     }
+
+    const events = await res.json();
 
     if (events.length === 0) {
       eventsList.innerHTML = '<p>Nema događaja.</p>';
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
   } catch (err) {
-    console.error(err);
+    console.error('Greška prilikom poziva API-ja:', err);
     eventsList.innerHTML = '<p>Došlo je do greške na serveru.</p>';
   }
 });
@@ -58,10 +58,9 @@ document.getElementById('addEventBtn').addEventListener('click', () => {
 function editEvent(id) {
   window.location.href = `eventForm.html?id=${id}`;
 }
-
+/// Brisanje eventa sa dashboard admin panela
 async function deleteEvent(id) {
   const confirmed = confirm('Da li sigurno želite da obrišete događaj?');
-
   if (!confirmed) return;
 
   const token = localStorage.getItem('token');
@@ -75,12 +74,20 @@ async function deleteEvent(id) {
     });
 
     if (res.ok) {
+      alert('Događaj je uspešno obrisan.');
       location.reload();
     } else {
-      alert('Greška pri brisanju događaja.');
+      const error = await res.json();
+      alert(`Greška: ${error.error || 'Nije moguće obrisati događaj.'}`);
+      console.error('Greška pri brisanju:', error);
     }
   } catch (err) {
-    console.error(err);
+    console.error('Greška pri komunikaciji sa serverom:', err);
     alert('Greška pri komunikaciji sa serverom.');
   }
 }
+//Odjava sa dashboard admin panela
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('token');
+  window.location.href = 'login.html';
+});
