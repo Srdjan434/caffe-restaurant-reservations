@@ -67,7 +67,7 @@ exports.updateEvent = async (req, res) => {
   const venue_name = req.user.venue_name;
 
   try {
-    const [rows] = await db.query('SELECT * FROM events WHERE id = ? AND venue_name = ?', [id, venue_name]);
+    const [rows] = await db.query('SELECT * FROM events WHERE id = ? AND venue_name = ?', [id, reg.user.id]);
     if (rows.length === 0) {
       return res.status(403).json({ error: 'Nemate pristup ovom događaju' });
     }
@@ -90,7 +90,7 @@ exports.deleteEvent = async (req, res) => {
   const venue_name = req.user.venue_name;
 
   try {
-    const [rows] = await db.query('SELECT * FROM events WHERE id = ? AND venue_name = ?', [id, venue_name]);
+    const [rows] = await db.query('SELECT * FROM events WHERE id = ? AND venue_name = ?', [id, reg.user.id]);
     if (rows.length === 0) {
       return res.status(403).json({ error: 'Nemate pristup ovom događaju' });
     }
