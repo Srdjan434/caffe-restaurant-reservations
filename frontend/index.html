@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dogadjaji</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container" id="events-container"></div>
+
+  <script src="script.js"></script>
+
+  <script>
+  // Event delegation za dugmad, jer se dinamički ubacuju u DOM
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.classList.contains('rezervisi-btn')) {
+      const eventId = e.target.dataset.eventId;
+      window.location.href = `event.html?id=${eventId}`;
+    }
+  });
+  </script>
+
+</body>
+</html>

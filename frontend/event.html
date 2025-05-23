@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Rezervacija</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container" id="event-container">
+    <!-- Podaci o događaju će biti ubačeni ovde -->
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get('id');
+
+    fetch(`http://localhost:3000/api/events/${eventId}`)
+      .then(res => res.json())
+      .then(event => {
+        const container = document.getElementById('event-container');
+        container.innerHTML = `
+          <div class="event-card">
+            <img src="http://localhost:3000/${event.image_path}" alt="Slika">
+            <h2 class="event-title">${event.title}</h2>
+            <p class="event-description">${event.description}</p>
+            <p class="event-date">${new Date(event.event_date).toLocaleDateString()}</p>
+            <form id="reservation-form">
+              <input type="text" name="full_name" placeholder="Ime i prezime" required><br>
+              <input type="email" name="email" placeholder="Email adresa" required><br>
+              <input type="number" name="number_of_people" placeholder="Broj osoba" required><br>
+              <button type="submit">Potvrdi</button>
+            </form>
+            <p id="message"></p>
+          </div>
+        `;
+
+        document.getElementById('reservation-form').addEventListener('submit', function(e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+
+          fetch('http://localhost:3000/api/reservations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              full_name: formData.get('full_name'),
+              email: formData.get('email'),
+              number_of_people: formData.get('number_of_people'),
+              venue_name: event.venue_name,
+              event_date: event.event_date,
+              event_id: event.id,
+              title: event.title
+            })
+          }).then(res => {
+            if (!res.ok) throw new Error('Greška u slanju rezervacije');
+            return res.json();
+          })
+          .then(data => {
+            alert('Hvala! Vaša rezervacija je poslata.');
+            window.location.href = 'index.html'; // ← Redirektuje na početnu stranicu
+          })
+          .catch(err => {
+            document.getElementById('message').innerText = 'Greška prilikom slanja rezervacije.';
+            console.error(err);
+          });
+        });
+      })
+      .catch(err => {
+        document.getElementById('event-container').innerText = 'Greška pri učitavanju događaja.';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
