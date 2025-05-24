@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         <img src="http://localhost:3000/${event.image_path}" alt="${event.title}">
         <h2>${event.title}</h2>
         <p>${event.description}</p>
-        <p><strong>Datum:</strong> ${new Date(event.event_date).toLocaleDateString('sr-RS')}</p>
+        <p class="event-date"><strong>Datum:</strong> ${new Date(event.event_date).toLocaleDateString('sr-RS')}</p>
         <button onclick="window.open('event.html?id=${event.id}', '_blank')">Rezerviši</button>
       `;
       container.appendChild(card);
