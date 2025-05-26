@@ -1,6 +1,5 @@
 const db = require('../config/db');
 const { sendReservationEmail } = require('../utils/emailService');
-const { sendTelegramMessage } = require('../utils/telegramService'); // dodaj ovo
 
 exports.createReservation = async (req, res) => {
   const { full_name, email, number_of_people, venue_name, event_date, event_id, title } = req.body;
@@ -19,22 +18,18 @@ exports.createReservation = async (req, res) => {
       [full_name, email, number_of_people, venue_name, eventDateOnly, event_id]
     );
 
-    // Pošalji email na tvoj email
+    // Pošalji email menadžeru
     const managerEmail = 'srdjanjokic13@gmail.com';
-    await sendReservationEmail(managerEmail, { full_name, email, number_of_people, venue_name, event_date: eventDateOnly, title });
+    await sendReservationEmail(managerEmail, {
+      full_name,
+      email,
+      number_of_people,
+      venue_name,
+      event_date: eventDateOnly,
+      title
+    });
 
-    // Dohvati telegram_chat_id menadžera iz baze za dati venue_name
-    const [rows] = await db.query(`SELECT telegram_chat_id FROM users WHERE venue_name = ? LIMIT 1`, [venue_name]);
-
-    if (rows.length > 0 && rows[0].telegram_chat_id) {
-      const chatId = rows[0].telegram_chat_id;
-      const message = `Nova rezervacija za ${venue_name}:\nIme: ${full_name}\nEmail: ${email}\nBroj osoba: ${number_of_people}\nDatum: ${eventDateOnly}\nDogađaj: ${title}`;
-
-      // Pošalji Telegram poruku
-      await sendTelegramMessage(chatId, message);
-    }
-
-    res.status(201).json({ message: 'Rezervacija uspešno kreirana i poslata emailom i na Telegram' });
+    res.status(201).json({ message: 'Rezervacija uspešno kreirana i poslata emailom' });
   } catch (error) {
     console.error('Greška pri kreiranju rezervacije:', error);
     res.status(500).json({ error: 'Greška prilikom slanja rezervacije' });
