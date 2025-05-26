@@ -8,13 +8,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     events.forEach(event => {
       const card = document.createElement('div');
       card.className = 'event-card';
-      card.innerHTML = `
-        <img src="http://localhost:3000/${event.image_path}" alt="${event.title}">
-        <h2>${event.title}</h2>
-        <p>${event.description}</p>
-        <p class="event-date"><strong>Datum:</strong> ${new Date(event.event_date).toLocaleDateString('sr-RS')}</p>
-        <button onclick="window.open('event.html?id=${event.id}', '_blank')">Rezerviši</button>
-      `;
+
+      const img = document.createElement('img');
+      img.src = `http://localhost:3000/${event.image_path}`;
+      img.alt = event.title;
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'event-content';
+
+      const title = document.createElement('h3');
+      title.className = 'event-title';
+      title.textContent = event.title;
+
+      const description = document.createElement('p');
+      description.className = 'event-description';
+      description.textContent = event.description;
+
+      const date = document.createElement('p');
+      date.className = 'event-date';
+      date.innerHTML = `<strong>Datum:</strong> ${new Date(event.event_date).toLocaleDateString('sr-RS')}`;
+
+      const rezervisiBtn = document.createElement('button');
+      rezervisiBtn.className = 'rezervisi-btn';
+      rezervisiBtn.textContent = 'Rezerviši';
+
+      // ✅ Rešenje: ispravno otvori novi tab bez menjanja trenutnog taba
+      rezervisiBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // ← sprečava neželjene događaje
+        window.open(`event.html?id=${event.id}`, '_blank');
+      });
+
+      contentDiv.appendChild(title);
+      contentDiv.appendChild(description);
+      contentDiv.appendChild(date);
+      contentDiv.appendChild(rezervisiBtn);
+
+      card.appendChild(img);
+      card.appendChild(contentDiv);
       container.appendChild(card);
     });
   } catch (err) {

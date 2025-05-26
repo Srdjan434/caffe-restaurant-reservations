@@ -32,14 +32,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     events.forEach(event => {
       const eventDiv = document.createElement('div');
-      eventDiv.classList.add('event-card');
+      eventDiv.classList.add('event-card-dash');
 
       eventDiv.innerHTML = `
-        <h3>${event.title}</h3>
-        <p>${event.description}</p>
-        <p><strong>Datum:</strong> ${new Date(event.event_date).toLocaleDateString('sr-RS')}</p>
-        <button onclick="editEvent(${event.id})">Izmeni</button>
-        <button onclick="deleteEvent(${event.id})">Obriši</button>
+        <h3 class="dashboard-title">${event.title}</h3>
+        <p class="dashboard-description">${event.description}</p>
+        <p class="dashboard-date"><strong>Datum:</strong> ${new Date(event.event_date).toLocaleDateString('sr-RS')}</p>
+        <button class="dashboard-edit" onclick="editEvent(${event.id})">Izmeni</button>
+        <button class="dashboard-delete" onclick="deleteEvent(${event.id})">Obriši</button>
       `;
 
       eventsList.appendChild(eventDiv);

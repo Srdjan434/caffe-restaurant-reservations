@@ -18,126 +18,162 @@ body {
 }
 
 .event-card {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  width: 30%;
-  box-sizing: border-box;
   position: relative;
+  background-color: #ffffff;
+  border-radius: 10px;
   display: flex;
-  flex-direction: column;
-  min-height: 550px;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 15px;
+  gap: 20px;
+  width: 48%;
+  min-height: 250px;
+  box-sizing: border-box;
 }
 
 .event-card img {
-  max-width: 100%;
+  width: 50%;
   border-radius: 10px;
-  display: block;
-  margin: 0 auto;
+  object-fit: cover;
+}
+
+.event-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  position: relative;
+  padding-bottom: 45px;
 }
 
 .event-title {
-  font-size: 24px;
-  margin: 10px 0 5px;
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
 }
 
 .event-description {
-  font-size: 16px;
-  margin: 5px 0;
-  flex: 1; /* Gura sadržaj prema vrhu, a dugme ostaje dole */
+  font-size: 14px;
+  flex-grow: 1;
+  margin-bottom: 10px;
+  text-align: justify;
 }
 
 .event-date {
-  font-size: 14px;
+  font-size: 13px;
+  color: #000;
+  margin: 0;
   position: absolute;
-  bottom: 60px; /* Dugme je 20px od dna, ovo ga drži 40px iznad */
-  left: 20px;
+  bottom: 80px;
+  left: 0;
 }
 
-.event-card button {
+.rezervisi-btn {
   background-color: #007bff;
-  border: none;
   color: white;
-  padding: 10px 15px;
+  border: none;
+  padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-}
-
-/* REZERVATIONS EVENT */
-.event-card-res {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-  margin: auto;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  min-height: 700px;
-  box-sizing: border-box;
-}
-
-.event-card-res img {
-  max-width: 100%;
-  border-radius: 10px;
-  display: block;
-  margin: 0 auto;
-}
-
-.event-card-res h2 {
-  font-size: 24px;
-  margin: 10px 0 5px;
-}
-
-.event-card-res p.event-description {
-  font-size: 16px;
-  margin: 5px 0;
-  flex: 1;
-}
-
-.event-card-res .event-date {
   font-size: 14px;
   position: absolute;
-  bottom: 35px;
-  left: 20px;
+  bottom: 44px;
+  left: 0;
+}
+
+.rezervisi-btn:hover {
+  background-color: #0056b3;
+}
+
+
+/* REZERVACIJA STRANICA - NOVI STIL */
+
+.reservation-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  max-width: 1000px;
+  margin: 50px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.left-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.left-side img {
+  width: 35%;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.left-side h2 {
+  font-size: 24px;
+  margin: 10px 0 0 0;
+}
+
+.left-side .event-description {
+  font-size: 16px;
+  text-align: justify;
+}
+
+.left-side .event-date-res {
+  font-size: 14px;
+}
+
+.right-side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.right-side h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
 }
 
 #reservation-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
+  gap: 20px;
 }
 
 #reservation-form input {
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px;
   font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
 }
 
 #reservation-form button {
   background-color: #007bff;
-  border: none;
   color: white;
-  padding: 10px 15px;
+  padding: 12px;
+  border: none;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  position: absolute;
-  bottom: 5px;
-  left: 20px;
 }
 
-#message {
-  margin-top: 10px;
-  color: green;
+#reservation-form button:hover {
+  background-color: #0056b3;
 }
+
+/* Responsive za manje ekrane */
+@media (max-width: 768px) {
+  .reservation-wrapper {
+    flex-direction: column;
+  }
+}
+
 
 /* LOGIN STRANICA */
 
@@ -207,23 +243,97 @@ body {
 
 /* DASHBOARD STRANICA */
 
-.logout-button {
+.dashboard-container {
+  max-width: 800px;
+  margin: 80px auto 40px;
+  padding: 20px;
+  text-align: center;
+}
+
+#logoutBtn, #addEventBtn {
   position: absolute;
   top: 20px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+
+}
+
+#logoutBtn {
   right: 20px;
-  background-color: #d9534f;
+  background-color: #dc3545; /* crvena */
+}
+
+#logoutBtn:hover {
+  background-color: #b02a37;
+}
+
+#addEventBtn {
+  right: 120px;
+  background-color: #007bff; /* plava */
+}
+
+#addEventBtn:hover {
+  background-color: #0056b3;
+}
+
+/* Kartica za događaj */
+.event-card-dash {
+  background-color: white;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Naslov događaja */
+.dashboard-title {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+/* Opis događaja */
+.dashboard-description {
+  font-size: 16px;
+  margin-bottom: 10px;
+  text-align: justify;
+}
+
+/* Datum događaja */
+.dashboard-date {
+  font-size: 15px;
+  margin-bottom: 15px;
+}
+
+/* Dugmad u kartici */
+.dashboard-edit,
+.dashboard-delete {
+  background-color: #007bff;
   color: white;
   border: none;
-  padding: 10px 16px;
-  border-radius: 5px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 14px;
   cursor: pointer;
-  font-weight: bold;
+  margin: 5px;
 }
 
-.logout-button:hover {
-  background-color: #c9302c;
+.dashboard-delete {
+  background-color: #dc3545;
 }
 
+.dashboard-edit:hover {
+  background-color: #0056b3;
+}
+
+.dashboard-delete:hover {
+  background-color: #b02a37;
+}
 
 /* STRANICA ZA DODAVANJE DOGADJAJA I ZA EDITOVANJE DOGADJAJA*/
 
@@ -290,5 +400,19 @@ body {
 @media (max-width: 600px) {
   .event-card {
     width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  #logoutBtn, #addEventBtn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .dashboard-container {
+    padding: 10px;
+  }
+
+  .event-card {
+    padding: 15px;
   }
 }
