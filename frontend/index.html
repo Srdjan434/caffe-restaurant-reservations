@@ -5,20 +5,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dogadjaji</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400&display=swap" rel="stylesheet">
 </head>
 <body>
+
+  <!-- HEADER + BANNER -->
+  <header class="hero-section">
+    <div class="overlay"></div>
+    <nav class="navbar">
+      <div class="nav-left">
+        <a href="index.html">POCETNA</a>
+        <a href="#events-container">DOGADJAJI</a>
+      </div>
+
+      <div class="nav-center">
+        <a href="index.html"><img class="logo-img" src="assets/img/white-transparent.png" alt="banner"/></a>
+      </div>
+
+      <div class="nav-right">
+        <a href="#">KONTAKT</a>
+        <a href="#">JOS NESTO</a>
+      </div>
+    </nav>
+    
+
+    <div class="banner-text">
+      <h1>Lorem Ipsum</h1>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    </div>
+    <div class="banner-img"></div>
+  </header>
+
   <div class="container" id="events-container"></div>
 
   <script src="script.js"></script>
-
   <script>
-  // Event delegation za dugmad, jer se dinamički ubacuju u DOM
-  document.addEventListener('click', function (e) {
-    if (e.target && e.target.classList.contains('rezervisi-btn')) {
-      const eventId = e.target.dataset.eventId;
-      window.location.href = `event.html?id=${eventId}`;
-    }
-  });
+    document.addEventListener('click', function (e) {
+      if (e.target && e.target.classList.contains('rezervisi-btn')) {
+        const eventId = e.target.dataset.eventId;
+        window.location.href = `event.html?id=${eventId}`;
+      }
+    });
   </script>
 
 </body>
