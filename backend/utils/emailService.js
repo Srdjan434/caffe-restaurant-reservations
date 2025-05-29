@@ -19,6 +19,7 @@ async function sendReservationEmail(to, reservationData) {
       <h3>Nova rezervacija za događaj: ${reservationData.title}</h3>
       <p><strong>Ime i prezime:</strong> ${reservationData.full_name}</p>
       <p><strong>Email:</strong> ${reservationData.email}</p>
+      <p><strong>Kontakt telefon:</strong> ${reservationData.phone_number}</p>
       <p><strong>Broj osoba:</strong> ${reservationData.number_of_people}</p>
       <p><strong>Datum događaja:</strong> ${new Date(reservationData.event_date).toLocaleDateString()}</p>
       <p><strong>Lokacija:</strong> ${reservationData.venue_name}</p>
