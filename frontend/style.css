@@ -538,11 +538,18 @@ body {
   background-color: #f9f9f9;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  background-image: url('assets/img/bg-table-dark.png');
+  background-size:cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 400px;
+  
 }
 
-.table-map h3 {
+.table-map-title h2 {
   font-family: 'Bebas Neue', sans-serif;
   margin-bottom: 15px;
+  text-align: center;
 }
 
 .tables-grid {
@@ -566,14 +573,23 @@ body {
 .table-cell.available {
   background-color: #48bb78; /* green */
   color: white;
+  border: 2px solid #000;
 }
 
 .table-cell.reserved {
   background-color: #e53e3e; /* red */
   color: white;
+  border: 2px solid #000;
 }
-
-
+.table-cell.selected {
+  border: 3px solid #000;
+  box-shadow: 0 0 5px #aeaeae;
+  background-color: #007bff;
+}
+.table-cell.available:hover {
+  background-color: #007bff;
+  border: 2px solid #000;
+}
 /* RESPONSIVE */
 @media (max-width: 900px) {
   .event-card {

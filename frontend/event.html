@@ -32,17 +32,24 @@
 
   <div class="container" id="event-container"></div>
 
+<!-- OSTATAK ISTI DO <script> -->
+
 <script>
   const params = new URLSearchParams(window.location.search);
   const eventId = params.get('id');
 
   fetch(`http://localhost:3000/api/events/${eventId}`)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('Neuspešan odgovor sa servera.');
+      return res.json();
+    })
     .then(event => {
       const container = document.getElementById('event-container');
       container.innerHTML = `
+        <div class="table-map-title">
+            <h2>Raspored stolova</h2>
+        </div>
         <div class="table-map" id="table-map">
-            <h3>Raspored stolova</h3>
             <div id="tables-grid" class="tables-grid"></div>
         </div>
 
@@ -61,16 +68,40 @@
               <input type="email" name="email" placeholder="Email adresa" required>
               <input type="tel" name="phone_number" placeholder="Broj telefona" required>
               <input type="number" name="number_of_people" placeholder="Broj osoba" required>
+              <input type="hidden" name="table_id" id="selected-table-id" required>
               <button type="submit">Potvrdi</button>
             </form>
+            <p id="selected-table-label"></p>
           </div>
         </div>
       `;
 
-      // Submit rezervacije
+      let selectedTableId = null;
+
+      // Klik na stolove
+      document.getElementById('tables-grid').addEventListener('click', function (e) {
+        if (e.target.classList.contains('available')) {
+          // Očisti prethodni izbor
+          const allCells = document.querySelectorAll('.table-cell');
+          allCells.forEach(cell => cell.classList.remove('selected'));
+
+          // Obeleži izabrani
+          e.target.classList.add('selected');
+          selectedTableId = e.target.getAttribute('data-id');
+          document.getElementById('selected-table-id').value = selectedTableId;
+          document.getElementById('selected-table-label').innerText = `Izabrali ste sto broj: ${e.target.innerText}`;
+        }
+      });
+
+      // Slanje rezervacije
       document.getElementById('reservation-form').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
+
+        if (!formData.get('table_id')) {
+          alert('Molimo vas da izaberete sto pre slanja rezervacije.');
+          return;
+        }
 
         fetch('http://localhost:3000/api/reservations', {
           method: 'POST',
@@ -80,6 +111,7 @@
             email: formData.get('email'),
             phone_number: formData.get('phone_number'),
             number_of_people: formData.get('number_of_people'),
+            table_id: formData.get('table_id'),
             venue_name: event.venue_name,
             event_date: event.event_date,
             event_id: event.id,
@@ -99,22 +131,28 @@
         });
       });
 
-      // Dohvati sve stolove i zauzete za ovaj event — POMERENO OVDE
+      // Učitavanje svih i zauzetih stolova
       Promise.all([
         fetch(`http://localhost:3000/api/tables/${event.venue_name}`).then(res => res.json()),
         fetch(`http://localhost:3000/api/tables/reserved/${eventId}`).then(res => res.json())
       ])
       .then(([allTables, reservedTables]) => {
+        const reservedIds = reservedTables.map(t => t.id);
         const tablesGrid = document.getElementById('tables-grid');
+        tablesGrid.innerHTML = '';
+
         allTables.forEach(table => {
           const div = document.createElement('div');
           div.className = 'table-cell';
           div.textContent = table.table_number;
-          if (reservedTables.includes(table.table_number)) {
+          div.setAttribute('data-id', table.id);
+
+          if (reservedIds.includes(table.id)) {
             div.classList.add('reserved');
           } else {
             div.classList.add('available');
           }
+
           tablesGrid.appendChild(div);
         });
       })
@@ -125,6 +163,7 @@
       console.error(err);
     });
 </script>
+
 
 </body>
 </html>

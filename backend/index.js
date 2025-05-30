@@ -23,11 +23,12 @@ app.use('/assets', express.static('assets'));
 app.get('/', (req, res) => {
   res.send('Backend radi');
 });
+// Stolovi
+const tableRoutes = require('./routes/table');
+app.use('/api/tables', tableRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server radi na portu ${PORT}`);
 });
-// Stolovi
-const tableRoutes = require('./routes/table');
-app.use('/api/tables', tableRoutes);
+
