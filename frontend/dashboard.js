@@ -40,9 +40,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         <p class="dashboard-date"><strong>Datum:</strong> ${new Date(event.event_date).toLocaleDateString('sr-RS')}</p>
         <button class="dashboard-edit" onclick="editEvent(${event.id})">Izmeni</button>
         <button class="dashboard-delete" onclick="deleteEvent(${event.id})">Obriši</button>
+        <div class="table-map-title">
+          <h3>Raspored stolova</h3>
+        </div>
+        <div class="table-map">
+          <div class="tables-grid" id="tables-grid-${event.id}"></div>
+        </div>
       `;
 
       eventsList.appendChild(eventDiv);
+
+      // ➕ Dodaj prikaz šeme stolova
+      prikaziSemuStolova(event);
     });
 
   } catch (err) {
@@ -58,6 +67,7 @@ document.getElementById('addEventBtn').addEventListener('click', () => {
 function editEvent(id) {
   window.location.href = `eventForm.html?id=${id}`;
 }
+
 /// Brisanje eventa sa dashboard admin panela
 async function deleteEvent(id) {
   const confirmed = confirm('Da li sigurno želite da obrišete događaj?');
@@ -86,8 +96,102 @@ async function deleteEvent(id) {
     alert('Greška pri komunikaciji sa serverom.');
   }
 }
+
+// Prikaz šeme stolova sa klik funkcijom za menadžere
+function prikaziSemuStolova(event) {
+  const eventId = event.id;
+  const venueName = event.venue_name;
+  const gridElement = document.getElementById(`tables-grid-${eventId}`);
+
+  Promise.all([
+    fetch(`http://localhost:3000/api/tables/${venueName}`).then(res => res.json()),
+    fetch(`http://localhost:3000/api/tables/reserved/${eventId}`).then(res => res.json())
+  ])
+  .then(([allTables, reservedTables]) => {
+    const reservedIds = reservedTables.map(t => t.id);
+    gridElement.innerHTML = '';
+
+    allTables.forEach(table => {
+      const div = document.createElement('div');
+      div.className = 'table-cell';
+      div.textContent = table.table_number;
+      div.setAttribute('data-id', table.id);
+
+      if (reservedIds.includes(table.id)) {
+        div.classList.add('reserved');
+      } else {
+        div.classList.add('available');
+      }
+
+      // Klik na sto – prikaži info
+      div.addEventListener('click', async () => {
+        if (reservedIds.includes(table.id)) {
+          try {
+            const res = await fetch(`http://localhost:3000/api/reservations/table/${table.id}/event/${eventId}`);
+            const data = await res.json();
+            document.getElementById('modalFullName').textContent = data.full_name;
+            document.getElementById('modalEmail').textContent = data.email;
+            document.getElementById('modalPhone').textContent = data.phone_number;
+            document.getElementById('modalPeople').textContent = data.number_of_people;
+
+            document.getElementById('reservationModal').style.display = 'block';
+          } catch (err) {
+            alert('Greška pri dohvatanju rezervacije.');
+            console.error(err);
+          }
+        } else {
+          const slobodni = allTables.filter(t => !reservedIds.includes(t.id));
+            showFreeTablesModal(slobodni);        
+        }
+      });
+
+      gridElement.appendChild(div);
+    });
+  })
+  .catch(err => {
+    console.error('Greška pri učitavanju stolova:', err);
+  });
+}
+// Modal za slobodne stolove
+function showFreeTablesModal(freeTables) {
+  const modal = document.getElementById('freeTablesModal');
+  const list = document.getElementById('free-tables-list');
+  list.innerHTML = '';
+
+  freeTables.forEach(table => {
+    const li = document.createElement('li');
+    li.textContent = `Sto ${table.table_number}`;
+    list.appendChild(li);
+  });
+
+  modal.style.display = 'block';
+}
+
+document.getElementById('closeFreeModal').addEventListener('click', () => {
+  document.getElementById('freeTablesModal').style.display = 'none';
+});
+
+window.addEventListener('click', (event) => {
+  const modal = document.getElementById('freeTablesModal');
+  if (event.target === modal) {
+    modal.style.display = 'none';
+  }
+});
+
+
 //Odjava sa dashboard admin panela
 document.getElementById('logoutBtn').addEventListener('click', () => {
   localStorage.removeItem('token');
   window.location.href = 'login.html';
+});
+document.getElementById('closeModal').addEventListener('click', () => {
+  document.getElementById('reservationModal').style.display = 'none';
+});
+
+// Zatvori modal klikom van kutije
+window.addEventListener('click', (event) => {
+  const modal = document.getElementById('reservationModal');
+  if (event.target === modal) {
+    modal.style.display = 'none';
+  }
 });

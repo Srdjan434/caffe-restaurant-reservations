@@ -61,3 +61,28 @@ try {
   res.status(500).json({ error: 'Greška prilikom slanja rezervacije' });
 }
 };
+// GET rezervacija za određeni sto i događaj
+exports.getReservationByTableAndEvent = async (req, res) => {
+  const { tableId, eventId } = req.params;
+
+  try {
+    const [rows] = await db.query(
+      `SELECT full_name, email, phone_number, number_of_people
+       FROM reservations
+       WHERE table_id = ? AND event_id = ?
+       LIMIT 1`,
+      [tableId, eventId]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ error: 'Rezervacija nije pronađena.' });
+    }
+
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Greška u getReservationByTableAndEvent:', err);
+    res.status(500).json({ error: 'Greška na serveru.' });
+  }
+};
+
+

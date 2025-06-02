@@ -17,6 +17,30 @@
     <div id="eventsList"></div>
   </div>
 
+
+
+  <!-- MODAL ZA PRIKAZ REZERVACIJE -->
+  <div id="reservationModal" class="modal-overlay">
+    <div class="modal-content">
+      <span id="closeModal" class="close-button">&times;</span>
+      <h2 class="modal-title">Detalji rezervacije</h2>
+      <p><strong class="modal-strong">Ime:</strong> <span id="modalFullName" class="modal-info"></span></p>
+      <p><strong class="modal-strong">Email:</strong> <span id="modalEmail" class="modal-info"></span></p>
+      <p><strong class="modal-strong">Telefon:</strong> <span id="modalPhone" class="modal-info"></span></p>
+      <p><strong class="modal-strong">Broj osoba:</strong> <span id="modalPeople" class="modal-info"></span></p>
+    </div>
+  </div>
+  <!-- Modal za slobodne stolove -->
+    <div id="freeTablesModal" class="modal-overlay">
+      <div class="modal-content">
+        <span class="close" id="closeFreeModal">&times;</span>
+        <h2>Slobodni stolovi</h2>
+        <ul id="free-tables-list"></ul>
+      </div>
+    </div>
+
+
+
   <script src="dashboard.js"></script>
 </body>
 
